@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout (title, content)" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">SURAJ SHOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; color: #333; background: #f9f9f9; }
+        .site-header { background: white; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; min-height: 60px; max-width: 1400px; margin: 0 auto; padding: 10px 20px; gap: 15px; flex-wrap: wrap; }
+        .logo { font-size: 24px; font-weight: 800; text-transform: uppercase; text-decoration: none; color: black; flex-shrink: 0; }
+        .site-nav { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .site-nav__link { font-size: 13px; font-weight: 500; text-transform: uppercase; text-decoration: none; color: black; white-space: nowrap; }
+        .site-nav__link:hover { opacity: 0.7; }
+        .site-nav__sep { color: #ccc; }
+        .header-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+        .header-login { font-size: 14px; text-decoration: none; color: black; display: flex; align-items: center; gap: 5px; padding: 8px 16px; border-radius: 25px; transition: all 0.3s; }
+        .header-login:hover { background: #f0f0f0; }
+        .homepage-container { display: flex; flex-wrap: wrap; width: 100%; }
+        .hero-block { position: relative; display: flex; align-items: center; justify-content: center; text-decoration: none; color: white; overflow: hidden; background-size: cover; background-position: center; height: 60vh; width: 100%; }
+        @media (min-width: 768px) { .hero-block { width: 33.333%; height: 80vh; } }
+        .hero-block--men { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/images/МУЖЧИН.jpg'); }
+        .hero-block--women { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/images/ЖЕНЩИН.jpg'); }
+        .hero-block--kids { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/images/ДЕТЕЙ.jpg'); }
+        .hero-block::before { content: ''; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.3); transition: background 0.3s; }
+        .hero-block:hover::before { background: rgba(0, 0, 0, 0.5); }
+        .hero-content { position: relative; z-index: 2; text-align: center; }
+        .hero-content h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
+        .hero-btn { display: inline-block; padding: 12px 28px; background: white; color: black; font-weight: bold; text-transform: uppercase; border-radius: 30px; text-decoration: none; transition: all 0.3s; }
+        .hero-btn:hover { background: black; color: white; transform: scale(1.05); }
+        .site-footer { border-top: 1px solid #e0e0e0; padding: 40px 0; margin-top: 60px; text-align: center; background: white; }
+        .footer-copy { font-size: 12px; color: #666; }
+        .auth-container { display: flex; justify-content: center; align-items: center; min-height: 80vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .auth-box { width: 100%; max-width: 400px; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .auth-box h2 { text-align: center; margin-bottom: 30px; color: #333; font-size: 28px; font-weight: 700; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; }
+        .form-control { width: 100%; padding: 12px 16px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 14px; transition: all 0.3s; }
+        .form-control:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .btn { display: inline-block; padding: 12px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; cursor: pointer; font-size: 16px; font-weight: 600; text-transform: uppercase; border-radius: 12px; width: 100%; transition: all 0.3s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102,126,234,0.3); }
+        .alert { padding: 12px; border-radius: 12px; margin-bottom: 20px; text-align: center; font-size: 14px; }
+        .alert-error { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+        .alert-success { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+        .alert-info { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .auth-links { text-align: center; margin-top: 25px; }
+        .auth-links p { margin: 10px 0; }
+        .auth-links a { color: #667eea; text-decoration: none; font-weight: 500; }
+        .auth-links a:hover { text-decoration: underline; }
+        .page-back-link { display: inline-block; margin-bottom: 20px; color: #667eea; text-decoration: none; font-weight: 600; }
+        .page-back-link:hover { text-decoration: underline; }
+        .page-title { font-size: 32px; font-weight: 800; margin-bottom: 30px; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 15px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .product-card:hover { transform: translateY(-4px); }
+        .product-card__img { height: 280px; background: #f5f5f5; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .product-card__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .product-card__body { padding: 15px; }
+        .product-card__name { font-weight: 600; font-size: 16px; margin-bottom: 6px; }
+        .product-card__desc { font-size: 13px; color: #666; line-height: 1.45; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .product-card__price { font-size: 20px; font-weight: bold; color: #e91e63; margin-bottom: 8px; }
+        .product-card__stock { font-size: 12px; color: #888; margin-bottom: 12px; }
+        .btn-cart { display: block; background: #f97316; color: white; padding: 10px 12px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: bold; text-align: center; }
+        .btn-cart:hover { background: #ea580c; }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a href="/" class="logo">SURAJ SHOP</a>
+        <nav class="site-nav">
+            <a href="/" class="site-nav__link">Главная</a>
+            <span class="site-nav__sep">|</span>
+            <a href="/products?categoryId=4" class="site-nav__link">Новинки</a>
+            <span class="site-nav__sep">|</span>
+            <a href="/products?categoryId=1" class="site-nav__link">Мужское</a>
+            <span class="site-nav__sep">|</span>
+            <a href="/products?categoryId=2" class="site-nav__link">Женское</a>
+            <span class="site-nav__sep">|</span>
+            <a href="/products?categoryId=3" class="site-nav__link">Детское</a>
+            <span class="site-nav__sep">|</span>
+            <a href="/products?categoryId=5" class="site-nav__link">Аксессуары</a>
+            <span class="site-nav__sep">|</span>
+            <a href="/products?categoryId=6" class="site-nav__link">Скидки</a>
+        </nav>
+        <div class="header-actions">
+            <a href="/login" class="header-login">👤 Вход</a>
+        </div>
+    </div>
+</header>
+
+<div class="page-container">
+    <main th:replace="${content}">Контент страницы</main>
+</div>
+
+<footer class="site-footer">
+    <p class="footer-copy">© 2026 Suraj-shop. Все права защищены.</p>
+</footer>
+
+</body>
+</html>

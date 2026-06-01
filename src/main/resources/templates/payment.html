@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Оплата заказа - SURAJ SHOP</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f9f9f9; }
+    .container { max-width: 500px; margin: 60px auto; padding: 0 20px; }
+    .card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); }
+    h1 { font-size: 28px; margin-bottom: 10px; }
+    .amount { font-size: 32px; font-weight: bold; color: #e91e63; margin: 20px 0; text-align: center; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 5px; font-weight: 500; }
+    input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+    .card-row { display: flex; gap: 15px; }
+    .card-row .form-group { flex: 1; }
+    .btn-pay { background: #f97316; color: white; padding: 14px; border: none; border-radius: 10px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+    .btn-pay:hover { background: #ea580c; }
+    .error { color: red; text-align: center; margin-bottom: 15px; }
+    .back-link { display: block; text-align: center; margin-top: 20px; color: #666; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <h1>💳 Оплата заказа</h1>
+    <p style="color: #666;">Сумма к оплате:</p>
+    <div class="amount" th:text="'₽' + ${cart.totalPrice}">₽0</div>
+
+    <div th:if="${paymentError}" class="error" th:text="${paymentError}">Ошибка</div>
+
+    <form action="/process-payment" method="post">
+      <div class="form-group">
+        <label>Номер карты</label>
+        <input type="text" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+      </div>
+      <div class="card-row">
+        <div class="form-group">
+          <label>Срок (ММ/ГГ)</label>
+          <input type="text" name="expiryDate" placeholder="12/28" maxlength="5" required>
+        </div>
+        <div class="form-group">
+          <label>CVV</label>
+          <input type="password" name="cvv" placeholder="123" maxlength="3" required>
+        </div>
+      </div>
+      <button type="submit" class="btn-pay">💳 Оплатить</button>
+    </form>
+    <a href="/cart" class="back-link">← Вернуться в корзину</a>
+  </div>
+</div>
+</body>
+</html>
+

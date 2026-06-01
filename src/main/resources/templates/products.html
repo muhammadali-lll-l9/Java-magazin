@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="${buyerCabinet} ? ~{common/buyer-cabinet-layout :: layout('Товары - SURAJ SHOP', ~{::main})} : ~{common/layout :: layout('Товары - SURAJ SHOP', ~{::main})}">
+<body>
+<main>
+    <div class="page-section" style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+        <h1 class="page-title" style="text-align: center;">Наши товары</h1>
+
+        <div th:if="${products.isEmpty()}" style="text-align: center; padding: 60px; color: #888;">
+            <p>😕 Товаров пока нет</p>
+        </div>
+
+        <div th:unless="${products.isEmpty()}" class="products-grid">
+            <div th:each="product : ${products}" class="product-card">
+                <div class="product-card__img">
+                    <img th:src="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)} ? ${product.imageUrl} : '/images/no-image.svg'"
+                         th:alt="${product.name}"
+                         loading="lazy"
+                         onerror="this.onerror=null; this.src='/images/no-image.svg';">
+                </div>
+                <div class="product-card__body">
+                    <div class="product-card__name" th:text="${product.name}">Название</div>
+                    <p class="product-card__desc"
+                       th:if="${product.description != null and !#strings.isEmpty(product.description)}"
+                       th:text="${product.description}">Краткое описание товара</p>
+                    <div class="product-card__price" th:text="'₽' + ${product.price}">Цена</div>
+                    <div class="product-card__stock" th:text="'В наличии: ' + ${product.stock}">Сток</div>
+                    <a th:href="@{/cart/add/{id}(id=${product.id})}" class="btn-cart">🛒 В корзину</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

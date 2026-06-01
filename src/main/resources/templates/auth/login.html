@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{common/layout :: layout('Вход - SURAJ SHOP', ~{::main})}">
+<body>
+<main class="auth-container">
+    <div class="auth-box">
+        <h2>Вход в аккаунт</h2>
+
+        <div th:if="${param.error}" class="alert alert-error">
+            Неверный логин или пароль
+        </div>
+
+        <div th:if="${param.registered}" class="alert alert-success">
+            Регистрация успешна! Войдите в аккаунт.
+        </div>
+
+        <div th:if="${showCartHint}" class="alert alert-info">
+            Для добавления товара в корзину войдите в аккаунт. После входа товар будет добавлен автоматически.
+        </div>
+
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label>Логин</label>
+                <input type="text" name="username" class="form-control" required autofocus>
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn">Войти</button>
+        </form>
+
+        <div class="auth-links">
+            <p>Нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
+            <p><a href="/">← На главную</a></p>
+        </div>
+    </div>
+</main>
+</body>
+</html>

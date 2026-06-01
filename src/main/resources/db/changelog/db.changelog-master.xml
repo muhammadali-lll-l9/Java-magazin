@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- ==================== ТАБЛИЦЫ ==================== -->
+
+    <!-- 1. Таблица users -->
+    <changeSet id="1" author="admin">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="role_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <!-- 2. Таблица roles -->
+    <changeSet id="2" author="admin">
+        <createTable tableName="roles">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_users_role"
+                baseTableName="users" baseColumnNames="role_id"
+                referencedTableName="roles" referencedColumnNames="id"/>
+    </changeSet>
+
+    <!-- 3. Таблица categories -->
+    <changeSet id="3" author="admin">
+        <createTable tableName="categories">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(500)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- 4. Таблица products -->
+    <changeSet id="4" author="admin">
+        <createTable tableName="products">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)"/>
+            <column name="price" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="stock" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_products_category"
+                baseTableName="products" baseColumnNames="category_id"
+                referencedTableName="categories" referencedColumnNames="id"/>
+
+    </changeSet>
+
+    <!-- 4.1 Добавление колонки image_url в таблицу products -->
+    <changeSet id="11" author="admin">
+        <addColumn tableName="products">
+            <column name="image_url" type="VARCHAR(500)"/>
+        </addColumn>
+    </changeSet>
+
+
+
+    <!-- 5. Таблица carts -->
+    <changeSet id="5" author="admin">
+        <createTable tableName="carts">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="total_price" type="DECIMAL(10,2)" defaultValue="0"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_carts_user"
+                baseTableName="carts" baseColumnNames="user_id"
+                referencedTableName="users" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- 6. Таблица cart_items -->
+    <changeSet id="6" author="admin">
+        <createTable tableName="cart_items">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="quantity" type="INTEGER" defaultValue="1"/>
+            <column name="price" type="DECIMAL(10,2)"/>
+            <column name="cart_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_cart_items_cart"
+                baseTableName="cart_items" baseColumnNames="cart_id"
+                referencedTableName="carts" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_cart_items_product"
+                baseTableName="cart_items" baseColumnNames="product_id"
+                referencedTableName="products" referencedColumnNames="id"/>
+    </changeSet>
+
+    <!-- 7. Таблица orders -->
+    <changeSet id="7" author="admin">
+        <createTable tableName="orders">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(50)" defaultValue="ЗАКАЗ ПРИНЯТ"/>
+            <column name="total_amount" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_price" type="DECIMAL(10,2)" defaultValue="0"/>  <!-- ← ДОБАВЬТЕ -->
+            <column name="customer_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_orders_user"
+                baseTableName="orders" baseColumnNames="user_id"
+                referencedTableName="users" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+
+    <!-- 8. Таблица order_items -->
+    <changeSet id="8" author="admin">
+        <createTable tableName="order_items">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="order_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="INTEGER" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_at_purchase" type="DECIMAL(10,2)"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_order_items_order"
+                baseTableName="order_items" baseColumnNames="order_id"
+                referencedTableName="orders" referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_order_items_product"
+                baseTableName="order_items" baseColumnNames="product_id"
+                referencedTableName="products" referencedColumnNames="id"/>
+    </changeSet>
+
+    <!-- ==================== НАЧАЛЬНЫЕ ДАННЫЕ ==================== -->
+
+    <!-- 9. Вставка ролей -->
+    <changeSet id="9" author="admin">
+        <insert tableName="roles">
+            <column name="id" value="1"/>
+            <column name="name" value="ADMIN"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="id" value="2"/>
+            <column name="name" value="USER"/>
+        </insert>
+    </changeSet>
+
+    <!-- 10. Вставка админа (пароль: admin123) -->
+    <changeSet id="10" author="admin">
+        <insert tableName="users">
+            <column name="username" value="admin"/>
+            <column name="password" value="$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG"/>
+            <column name="email" value="admin@shop.com"/>
+            <column name="role_id" value="1"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
+
+

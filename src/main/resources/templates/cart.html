@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{common/buyer-cabinet-layout :: layout('Корзина - SURAJ SHOP', ~{::main})}">
+<body>
+<main>
+    <div style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+        <h1 style="font-size: 32px; font-weight: 800; margin-bottom: 30px;">Моя корзина</h1>
+
+        <div th:if="${cartItems.isEmpty()}" style="text-align: center; padding: 60px; background: white; border-radius: 12px;">
+            <p style="font-size: 18px; color: #888; margin-bottom: 20px;">🛒 Корзина пуста</p>
+            <a href="/products" style="display: inline-block; background: #1e293b; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none;">Перейти к товарам</a>
+        </div>
+
+        <div th:unless="${cartItems.isEmpty()}">
+            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 15px rgba(0,0,0,0.05);">
+                <thead>
+                <tr style="background: #f8f9fa;">
+                    <th style="padding: 15px; text-align: left;">Товар</th>
+                    <th style="padding: 15px; text-align: left;">Цена</th>
+                    <th style="padding: 15px; text-align: left;">Количество</th>
+                    <th style="padding: 15px; text-align: left;">Сумма</th>
+                    <th style="padding: 15px; text-align: center;">Действие</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${cartItems}" style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 15px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <img th:src="${item.product.imageUrl != null and !#strings.isEmpty(item.product.imageUrl)} ? ${item.product.imageUrl} : '/images/no-image.svg'"
+                                 th:alt="${item.product.name}"
+                                 onerror="this.onerror=null; this.src='/images/no-image.svg';"
+                                 style="width: 56px; height: 56px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
+                            <div>
+                                <div style="font-weight: 600;" th:text="${item.product.name}">Название</div>
+                                <div style="font-size: 12px; color: #888;" th:text="${item.product.category != null ? item.product.category.name : ''}">Категория</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="padding: 15px;" th:text="'₽' + ${item.price}">Цена</td>
+                    <td style="padding: 15px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <a th:href="@{/cart/update/{id}(id=${item.id}, quantity=${item.quantity - 1})}" style="background: #e0e0e0; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: 5px; text-decoration: none; color: #333;">−</a>
+                            <span th:text="${item.quantity}" style="min-width: 30px; text-align: center;">1</span>
+                            <a th:href="@{/cart/update/{id}(id=${item.id}, quantity=${item.quantity + 1})}" style="background: #e0e0e0; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: 5px; text-decoration: none; color: #333;">+</a>
+                        </div>
+                    </td>
+                    <td style="padding: 15px; font-weight: bold;" th:text="'₽' + ${item.price * item.quantity}">Сумма</td>
+                    <td style="padding: 15px; text-align: center;">
+                        <a th:href="@{/cart/remove/{id}(id=${item.id})}" style="background: #ef4444; color: white; padding: 5px 12px; border-radius: 6px; text-decoration: none;" onclick="return confirm('Удалить товар из корзины?')">🗑️</a>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot style="background: #f8f9fa;">
+                <tr>
+                    <td colspan="3" style="padding: 15px; text-align: right; font-weight: bold; font-size: 18px;">Итого:</td>
+                    <td colspan="2" style="padding: 15px; font-weight: bold; font-size: 28px; color: #e91e63;" th:text="'₽' + ${cart.totalPrice}">0</td>
+                </tr>
+                </tfoot>
+            </table>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 20px; flex-wrap: wrap; gap: 15px;">
+                <a href="/products" style="background: #1e293b; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none;">← Продолжить покупки</a>
+                <a href="/checkout" style="background: #f97316; color: white; padding: 12px 35px; border-radius: 8px; text-decoration: none; font-weight: bold;">Оформить заказ →</a>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

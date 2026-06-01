@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{common/buyer-cabinet-layout :: layout('Личный кабинет - SURAJ SHOP', ~{::main})}">
+<body>
+<main class="homepage-container">
+    <a th:href="@{/products(categoryId=1)}" class="hero-block hero-block--men">
+        <div class="hero-content">
+            <h2>МУЖЧИНАМ</h2>
+            <span class="hero-btn">Смотреть коллекцию</span>
+        </div>
+    </a>
+    <a th:href="@{/products(categoryId=2)}" class="hero-block hero-block--women">
+        <div class="hero-content">
+            <h2>ЖЕНЩИНАМ</h2>
+            <span class="hero-btn">Смотреть коллекцию</span>
+        </div>
+    </a>
+    <a th:href="@{/products(categoryId=3)}" class="hero-block hero-block--kids">
+        <div class="hero-content">
+            <h2>ДЕТЯМ</h2>
+            <span class="hero-btn">Смотреть коллекцию</span>
+        </div>
+    </a>
+</main>
+</body>
+</html>

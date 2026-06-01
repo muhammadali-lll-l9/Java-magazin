@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Детали заказа - Админ панель</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0f172a; min-height: 100vh; }
+    .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+    .card { background: #1e293b; border-radius: 20px; padding: 30px; margin-bottom: 30px; }
+    .card h2 { color: #f97316; margin-bottom: 20px; font-size: 24px; border-left: 4px solid #f97316; padding-left: 15px; }
+    .info-row { display: flex; padding: 12px 0; border-bottom: 1px solid #334155; }
+    .info-label { width: 150px; font-weight: 600; color: #94a3b8; }
+    .info-value { flex: 1; color: white; }
+    .status-badge { background: #f97316; padding: 4px 12px; border-radius: 20px; display: inline-block; }
+    .items-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    .items-table th { background: #334155; padding: 12px; text-align: left; color: white; }
+    .items-table td { padding: 12px; border-bottom: 1px solid #334155; color: #cbd5e1; }
+    .total { font-size: 24px; font-weight: bold; color: #f97316; text-align: right; margin-top: 20px; }
+    .back-btn { background: #334155; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block; margin-top: 20px; }
+    .back-btn:hover { background: #475569; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <h2>📦 Заказ № <span th:text="${order.id}"></span></h2>
+
+    <div class="info-row">
+      <div class="info-label">Статус:</div>
+      <div class="info-value"><span class="status-badge" th:text="${order.status}">Новый</span></div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Дата заказа:</div>
+      <div class="info-value" th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy HH:mm')}"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>👤 Информация о клиенте</h2>
+    <div class="info-row">
+      <div class="info-label">ФИО получателя:</div>
+      <div class="info-value" th:text="${order.customerName}">—</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Телефон:</div>
+      <div class="info-value" th:text="${order.phone}">—</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Адрес доставки:</div>
+      <div class="info-value" th:text="${order.address}">—</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Пользователь (логин):</div>
+      <div class="info-value" th:text="${order.user != null ? order.user.username : '—'}">—</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🛒 Состав заказа</h2>
+    <table class="items-table">
+      <thead>
+      <tr><th>Товар</th><th>Цена</th><th>Кол-во</th><th>Сумма</th></tr>
+      </thead>
+      <tbody>
+      <tr th:each="item : ${orderItems}">
+        <td th:text="${item.product.name}">Товар</td>
+        <td th:text="'₽' + ${item.price}">1000</td>
+        <td th:text="${item.quantity}">1</td>
+        <td th:text="'₽' + ${item.price * item.quantity}">1000</td>
+      </tr>
+      </tbody>
+    </table>
+    <div class="total" th:text="'Итого: ₽' + ${order.totalAmount}">Итого: ₽0</div>
+  </div>
+
+  <a href="/admin/dashboard" class="back-btn">← Назад к заказам</a>
+</div>
+</body>
+</html>
+

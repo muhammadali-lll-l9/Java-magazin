@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{common/buyer-cabinet-layout :: layout('Оформление заказа - SURAJ SHOP', ~{::main})}">
+<body>
+<main>
+    <div class="page-section">
+        <h1 class="page-title">🛒 Оформление заказа</h1>
+        <p style="color: #666; margin: -15px 0 25px; line-height: 1.5;">
+            Мы отправим заказ на ближайшее или любое отделение почты по вашему выбору.
+            Укажите данные получателя и адрес почтового отделения.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            <div style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.05);">
+                <h3 style="font-size: 20px; margin-bottom: 20px; color: #f97316; border-left: 4px solid #f97316; padding-left: 15px;">📦 Доставка на почту</h3>
+                <form action="/process-payment-and-order" method="post">
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Имя</label>
+                        <input type="text" name="customerName" required
+                               style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Номер телефона</label>
+                        <input type="tel" name="phone" required
+                               style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Индекс почты</label>
+                        <input type="text" name="postalCode" placeholder="123456" required
+                               style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Адрес почты</label>
+                        <input type="text" name="address" placeholder="ул. Ленина, отделение №1" required
+                               style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Город</label>
+                        <input type="text" name="city" required
+                               style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+
+                    <h3 style="font-size: 20px; margin: 25px 0 20px; color: #f97316; border-left: 4px solid #f97316; padding-left: 15px;">💳 Оплата (учебный проект)</h3>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Номер карты (8 цифр)</label>
+                        <input type="text" name="cardNumber" placeholder="12345678" maxlength="8" inputmode="numeric"
+                               style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <div style="flex: 1; margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500;">Срок (ММ/ГГ)</label>
+                            <input type="text" name="expiryDate" placeholder="12/28" maxlength="5"
+                                   style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                        </div>
+                        <div style="flex: 1; margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500;">Код (CVV)</label>
+                            <input type="text" name="cvv" placeholder="123" maxlength="4"
+                                   style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                            style="background: #f97316; color: white; padding: 14px; border: none; border-radius: 10px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px;">
+                        💳 Оплатить и подтвердить заказ
+                    </button>
+                </form>
+            </div>
+
+            <div style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); height: fit-content;">
+                <h3 style="font-size: 20px; margin-bottom: 20px; color: #f97316; border-left: 4px solid #f97316; padding-left: 15px;">🛍 Ваш заказ</h3>
+                <div th:each="item : ${cartItems}" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;">
+                        <img th:src="${item.product.imageUrl != null and !#strings.isEmpty(item.product.imageUrl)} ? ${item.product.imageUrl} : '/images/no-image.svg'"
+                             th:alt="${item.product.name}"
+                             onerror="this.onerror=null; this.src='/images/no-image.svg';"
+                             style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px; flex-shrink: 0;">
+                        <span th:text="${item.product.name} + ' x ' + ${item.quantity}">Товар x 1</span>
+                    </div>
+                    <span th:text="'₽' + ${item.price * item.quantity}" style="flex-shrink: 0;">1000</span>
+                </div>
+                <div style="font-size: 24px; font-weight: bold; color: #e91e63; text-align: right; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;"
+                     th:text="'Итого: ₽' + ${cart.totalPrice}">Итого: ₽0</div>
+            </div>
+        </div>
+    </div>
+    <style>
+        @media (max-width: 768px) {
+            .page-section > div[style*="grid"] { grid-template-columns: 1fr !important; }
+        }
+    </style>
+</main>
+</body>
+</html>
